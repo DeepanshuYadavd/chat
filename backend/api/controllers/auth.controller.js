@@ -88,3 +88,46 @@ export const signin = async (req, res, next) => {
     });
   }
 };
+
+export const logout = async (req, res, next) => {
+  try {
+    return res
+      .status(200)
+      .clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+      })
+      .json({
+        message: "logout successfully",
+      });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+
+export const getUsers = async (req, res, next) => {
+  try {
+
+    const users = await Auth.find({ "_id": { "$ne": ObjectId(req.user.id) } }).select("-password");
+
+    if (users.length === 0) {
+      return res.status(400).json({
+        message: "No users Found"
+      })
+    }
+
+    return res.status(200).json({
+      message: "success",
+      data: users
+    })
+
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message
+    })
+  }
+}
