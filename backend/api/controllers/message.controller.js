@@ -2,7 +2,7 @@ import { Messages } from "../models/messages.schema.js";
 
 export const getMessages = async (req, res, next) => {
   try {
-    const chatId = req.params;
+    const { chatId } = req.params;
 
     const messages = await Messages.find({ chats: chatId })
       .populate("sender", "userName email")

@@ -1,5 +1,6 @@
 import { genToken } from "../../utils/genToken.js";
 import { Auth } from "../models/auth.schema.js";
+import { ObjectId } from "mongodb";
 
 export const signup = async (req, res, next) => {
   try {
@@ -111,15 +112,12 @@ export const logout = async (req, res, next) => {
 
 export const getUsers = async (req, res, next) => {
   try {
-
-    const users = await Auth.find({ "_id": { "$ne": ObjectId(req.user.id) } }).select("-password");
-
+    const users = await Auth.find({ "_id": { "$ne": new ObjectId(req.user.id) } }).select("-password");
     if (users.length === 0) {
       return res.status(400).json({
         message: "No users Found"
       })
     }
-
     return res.status(200).json({
       message: "success",
       data: users
