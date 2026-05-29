@@ -62,6 +62,7 @@ export const signin = async (req, res, next) => {
 
     //  token:
     const token = await genToken(user._id, user.email, user.userName);
+
     if (!token) {
       return res.status(400).json({
         message: "Something went wrong",
@@ -71,8 +72,8 @@ export const signin = async (req, res, next) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "strict",
+        secure: process.env.NODE_ENV === "development" ? false : true,
+        sameSite: process.env.NODE_ENV === "development" ? "strict" : "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({
