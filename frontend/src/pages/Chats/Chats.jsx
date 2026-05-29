@@ -70,7 +70,8 @@ function Chats() {
     if (!currentUser) return;
 
     // Connect to WebSocket server running on port 5000 (backend port)
-    const socket = io(import.meta.env.VITE_BACKEND_URL);
+    const socketUrl = import.meta.env.VITE_BACKEND_URL.replace(/\/api\/?$/, '');
+    const socket = io(socketUrl);
     socketRef.current = socket;
 
     socket.on('connect', () => {
