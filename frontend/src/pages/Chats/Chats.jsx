@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Search, 
-  Send, 
-  Info, 
-  Smile, 
-  Paperclip, 
-  MessageSquare, 
-  Sparkles, 
-  Lock, 
+import {
+  Search,
+  Send,
+  Info,
+  Smile,
+  Paperclip,
+  MessageSquare,
+  Sparkles,
+  Lock,
   RefreshCw,
   Clock
 } from 'lucide-react';
@@ -20,19 +20,19 @@ import './Chats.css';
 function Chats() {
   const { user: currentUser } = useAuth();
   const toast = useToast();
-  
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [messageText, setMessageText] = useState('');
-  
+
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -70,7 +70,7 @@ function Chats() {
     if (!currentUser) return;
 
     // Connect to WebSocket server running on port 5000 (backend port)
-    const socket = io('http://localhost:5000');
+    const socket = io(import.meta.env.VITE_BACKEND_URL);
     socketRef.current = socket;
 
     socket.on('connect', () => {
@@ -157,7 +157,7 @@ function Chats() {
   };
 
   // Filter users list by search query
-  const filteredUsers = users.filter(u => 
+  const filteredUsers = users.filter(u =>
     u.userName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -185,11 +185,11 @@ function Chats() {
               <Sparkles className="sparkle-icon animate-pulse-glow" size={18} />
               <h2>Conversations</h2>
             </div>
-            
+
             {currentUser && (
               <div className="current-user-identity">
-                <div 
-                  className="user-avatar-circle" 
+                <div
+                  className="user-avatar-circle"
                   style={{ background: getAvatarGradient(currentUser.userName) }}
                 >
                   {currentUser.userName?.charAt(0).toUpperCase()}
@@ -204,9 +204,9 @@ function Chats() {
 
           <div className="sidebar-search">
             <Search className="search-icon" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search contacts..." 
+            <input
+              type="text"
+              placeholder="Search contacts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
@@ -248,13 +248,13 @@ function Chats() {
                 const userId = u._id || u.id;
                 const isSelected = selectedUser && (selectedUser._id === u._id || selectedUser.id === u.id);
                 return (
-                  <button 
-                    key={userId} 
+                  <button
+                    key={userId}
                     onClick={() => handleSelectUser(u)}
                     className={`user-item-btn ${isSelected ? 'active' : ''}`}
                   >
-                    <div 
-                      className="user-avatar-circle" 
+                    <div
+                      className="user-avatar-circle"
                       style={{ background: getAvatarGradient(u.userName) }}
                     >
                       {u.userName?.charAt(0).toUpperCase()}
@@ -263,7 +263,7 @@ function Chats() {
                     <div className="user-item-details">
                       <div className="user-item-header">
                         <span className="user-item-name">{u.userName}</span>
-                        <span className="user-item-time"><Clock size={10} style={{marginRight: '2px'}}/> Active</span>
+                        <span className="user-item-time"><Clock size={10} style={{ marginRight: '2px' }} /> Active</span>
                       </div>
                       <span className="user-item-email">{u.email}</span>
                     </div>
@@ -281,8 +281,8 @@ function Chats() {
               {/* Header bar */}
               <div className="chat-header">
                 <div className="chat-header-identity">
-                  <div 
-                    className="user-avatar-circle" 
+                  <div
+                    className="user-avatar-circle"
                     style={{ background: getAvatarGradient(selectedUser.userName) }}
                   >
                     {selectedUser.userName?.charAt(0).toUpperCase()}
@@ -323,14 +323,14 @@ function Chats() {
                       const isCurrentUser = senderId === currentUserId;
 
                       return (
-                        <div 
-                          key={msg._id || msg.id} 
+                        <div
+                          key={msg._id || msg.id}
                           className={`message-bubble-wrapper ${isCurrentUser ? 'outgoing' : 'incoming'}`}
                         >
                           <div className="bubble-content-box">
                             <p className="bubble-text">{msg.content}</p>
                             <span className="bubble-timestamp">
-                              {msg.createdAt 
+                              {msg.createdAt
                                 ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                                 : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                               }
@@ -354,18 +354,18 @@ function Chats() {
                     <Smile size={18} />
                   </button>
                 </div>
-                
-                <input 
-                  type="text" 
+
+                <input
+                  type="text"
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
                   placeholder={`Write your message to ${selectedUser.userName}...`}
                   className="chat-message-input"
                 />
-                
-                <button 
-                  type="submit" 
-                  disabled={!messageText.trim()} 
+
+                <button
+                  type="submit"
+                  disabled={!messageText.trim()}
                   className="chat-send-btn"
                   title="Send message"
                 >
@@ -381,7 +381,7 @@ function Chats() {
               </div>
               <h2>Select a Conversation</h2>
               <p>Choose an active contact from the sidebar list to start exchanging real-time secure messages. OmniChat keeps your data protected.</p>
-              
+
               <div className="welcome-badge">
                 <Lock size={12} />
                 <span>End-to-End Encrypted Space</span>

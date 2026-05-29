@@ -3,7 +3,7 @@ import axios from 'axios';
 // Configure Axios with baseURL pointing to backend API (port 5000)
 // and credentials enabled to allow cookie transmission.
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
